@@ -59,5 +59,5 @@ for thread in threads:
 for t in threads:
     t.join()
 
-
+os.system("sh ./handle_data.sh")
 
