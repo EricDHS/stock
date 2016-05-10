@@ -35,6 +35,8 @@ from subprocess import check_output
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+rate = float(sys.argv[1])
+
 def peak_recent(code):
   try:
     output = check_output('sh stock_hhv.sh %s' % (code), shell=True)
@@ -58,14 +60,15 @@ def read_time_stock(code):
 
   price_now = ns[3].encode('utf-8')
   price_end = ns[5].encode('utf-8')
-  return price_now, price_end
+  return float(price_now), float(price_end)
 
 f = open('history_data/code', 'r')
 for code in f.readlines():
+  code = code.strip()
   his_peak = peak_recent(code)
   today_now, today_low= read_time_stock(code)
   if his_peak and today_low and today_now:
-    if today_low <= his_peak * 0.85:
+    if (today_low <= (his_peak * rate)) and (today_low >= (his_peak * 0.6)) :
       print "%s, peak: %s, today_low: %s, today_now: %s" % (code, his_peak, today_low, today_now)
 f.close()
 
