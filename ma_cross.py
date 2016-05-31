@@ -21,6 +21,7 @@ class myThread (threading.Thread):
 	self.name = name
     def run(self):
         print "Starting " + self.name
+        f_out=open("result/ma_cross_%s" % (datetime.datetime.today().date().strftime('%Y%m%d')), 'a')
         while True:
             code = get_code()
             if not code:
@@ -33,19 +34,31 @@ class myThread (threading.Thread):
                 ma5 = float(peak_data['ma5'].values[0])
                 ma10 = float(peak_data['ma10'].values[0])
                 ma20 = float(peak_data['ma20'].values[0])
+                close = float(peak_data['close'].values[0])
+                ma30 = get_ma30(code)
+                ma_var = pd.Series(data=[ma5, ma10, ma20, ma30], index=['a', 'b', 'c', 'd']).var() 
                 if (ma10 > ma20) and \
-		   (ma10-ma20)<0.3 and \
+		   (ma5 > ma10) and \
+                   (ma20 > ma30) and \
+                   ma_var < (close * 0.005) and \
+                   close<15 and close >3 and \
                    (datetime.datetime.now() - begin).days < 3:
-              	    print code	
+              	    print code
+                    f_out.write('%s\n' % (code))
             except Exception as e:
                 print 'something wrong with code: %s, %s' % (code, str(e))
+        f_out.close()
 
 def get_code():
     threadLock.acquire()
     r = f.readline()
     threadLock.release()
     return r.strip()
-
+def get_ma30(code):
+    data = pd.read_csv('pd_5days/%s.csv' % (code)).head(30)
+    if data.empty:
+        return 0
+    return float(data['close'].mean())
 threadLock = threading.Lock()
 threads = []
 

@@ -26,7 +26,7 @@ class myThread (threading.Thread):
                 return
             try:
                 end = datetime.date.today()
-                start = datetime.date.today() - datetime.timedelta(days=89)
+                start = datetime.date.today() - datetime.timedelta(days=200)
                 ts.get_hist_data(code, start='%s' % (start), end='%s' % (end)).to_csv('pd_5days/%s.csv' % (code))
             except:
                 print 'something wrong with code: %s' % (code)

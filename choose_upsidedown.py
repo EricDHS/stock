@@ -21,6 +21,7 @@ class myThread (threading.Thread):
 	self.name = name
     def run(self):
         print "Starting " + self.name
+        f_out=open("result/upsidedown_%s" % (datetime.datetime.today().date().strftime('%Y%m%d')), 'a')
         while True:
             code = get_code()
             if not code:
@@ -37,12 +38,14 @@ class myThread (threading.Thread):
                 if (peak_data['high'].values > peak_data['ma5'].values) and \
 		   (peak_data['high'].values > peak_data['ma10'].values) and \
 		   (peak_data['high'].values > peak_data['ma20'].values) and \
-		   ((ph*0.87) > cl) and \
+		   ((ph*0.89) > cl) and \
                    (cl > 0) and (cl < 18) and \
                    (ma5*0.96 >= ma10):
-              	    print code	
+              	    print code
+                    f_out.write('%s\n' % (code))
             except Exception as e:
                 print 'something wrong with code: %s, %s' % (code, str(e))
+        f_out.close()
 
 def get_code():
     threadLock.acquire()
