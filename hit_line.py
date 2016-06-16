@@ -21,7 +21,7 @@ class myThread (threading.Thread):
 	self.name = name
     def run(self):
         print "Starting " + self.name
-        f_out=open("result/ma_cross_%s" % (datetime.datetime.today().date().strftime('%Y%m%d')), 'a')
+        f_out=open("result/hit_line_%s" % (datetime.datetime.today().date().strftime('%Y%m%d')), 'a')
         while True:
             code = get_code()
             if not code:
@@ -35,13 +35,13 @@ class myThread (threading.Thread):
                 ma10 = float(peak_data['ma10'].values[0])
                 ma20 = float(peak_data['ma20'].values[0])
                 close = float(peak_data['close'].values[0])
-                turnover = float(peak_data['turnover'].values[0]) if 'turnover' in peak_data.columns else 0
+                turnover = float(peak_data['turnover'].values[0]) if 'turnover' in peak_data.columns else 0 
+                low = float(peak_data['low'].values[0])
                 ma30 = get_ma30(code)
-                ma_var = pd.Series(data=[ma5, ma10, ma20, ma30], index=['a', 'b', 'c', 'd']).var() 
                 if (ma10 > ma20) and \
 		   (ma5 > ma10) and \
                    (ma20 > ma30) and \
-                   ma_var < (close * 0.005) and \
+                   ((low<=ma10) or (abs(low -ma20) < (close*0.01))) and \
                    close<15 and close >3 and \
                    (datetime.datetime.now() - begin).days < 3:
               	    print code, turnover
