@@ -27,6 +27,47 @@ def get_sh_time():
     sh_time = local_time.astimezone(to_zone)
     return '%s:%s:%s' % (sh_time.hour, sh_time.minute, sh_time.second)
 
+def ama_data(data):
+    i = 0
+    series = pd.Series()
+    while (i<36):
+        if (0 == i):
+            tmp_data = data
+        else:
+            tmp_data = tmp_data.drop(tmp_data.head(1).index)
+        i += 1
+        series = series.append(pd.Series(data=ddd_data(tmp_data)))
+    return float(series.mean())
+        
+def ddd_data(data):
+    data5 = data.head(5)
+    data89 = data.head(89)
+    ma5 = float(data5.mean())
+    ma89 = float(data89.mean())
+    return (ma5 - ma89)
+
+def dma_qfq(code, prior_days=4):
+    data = pd.read_csv('qfq_data/%s.csv' % (code))
+    if data.empty:
+        return 9999,9999
+
+    data = data.drop(data.head(prior_days).index)
+    data = data['close']
+    ddd = float('%.3f' % (ddd_data(data)))
+    ama = float('%.3f' % (ama_data(data)))
+    return ddd, ama
+def dma_live_qfq(code, current_price):
+    data = pd.read_csv('qfq_data/%s.csv' % (code))
+    if data.empty:
+        return 9999,9999
+    current_price = float(current_price)
+    if is_later(get_sh_time(), '19:00:00') or is_early(get_sh_time(), '09:30:00'):
+        data = data.drop(data.head(1).index)
+    data = pd.Series(data=[current_price]).append(data['close'])
+    data = data.reset_index(drop=True)
+    ddd = float('%.3f' % (ddd_data(data)))
+    ama = float('%.3f' % (ama_data(data)))
+    return ddd, ama
 def get_mas_live_qfq(code, current_price):
     data = pd.read_csv('qfq_data/%s.csv' % (code))
     if data.empty:
