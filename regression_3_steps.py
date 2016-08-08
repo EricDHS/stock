@@ -13,6 +13,7 @@ sys.setdefaultencoding("utf-8")
 import threading
 import time
 import pandas as pd
+from MyStock import *
 
 f = open('pure_code', 'r')
 # f = open('test_pure_code', 'r')
