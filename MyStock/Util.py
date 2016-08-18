@@ -46,6 +46,14 @@ def ddd_data(data):
     ma89 = float(data89.mean())
     return (ma5 - ma89)
 
+def dma_qfq_with_data(code, data, prior_days=0):
+
+    data = data.drop(data.head(prior_days).index)
+    data = data['close']
+    ddd = float('%.3f' % (ddd_data(data)))
+    ama = float('%.3f' % (ama_data(data)))
+    return ddd, ama
+
 def dma_qfq(code, prior_days=4):
     data = pd.read_csv('qfq_data/%s.csv' % (code))
     if data.empty:

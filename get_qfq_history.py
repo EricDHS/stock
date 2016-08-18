@@ -12,6 +12,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 import threading
 import time
+FILE_END = False
 
 f = open('pure_code', 'r')
 class myThread (threading.Thread):
@@ -22,7 +23,10 @@ class myThread (threading.Thread):
         print "Starting " + self.name
         while True:
             code = get_code()
+            print 'Code is: %s, thread: %s' % (code, self.name) 
             if not code:
+                FILE_END = True
+                print '%s returns' % (self.name)
                 return
             try:
                 end = datetime.date.today()
@@ -32,6 +36,8 @@ class myThread (threading.Thread):
                 print 'something wrong with code: %s' % (code)
 
 def get_code():
+    if FILE_END:
+        return ""
     threadLock.acquire()
     r = f.readline()
     threadLock.release()

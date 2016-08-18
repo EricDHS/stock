@@ -52,7 +52,7 @@ class myThread (threading.Thread):
                     perfect_mas = 1
                 else:
                     perfect_mas = 0
-                if price < ( pre_close * 1.08 ):
+                if price < ( pre_close * 1.07 ):
                     continue
                 if is_later(get_sh_time(), '19:00:00') or is_early(get_sh_time(), '09:30:00'):
                     peak_data = peak_data.drop(peak_data.head(1).index)
