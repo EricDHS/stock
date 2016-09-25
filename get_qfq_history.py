@@ -22,26 +22,36 @@ class myThread (threading.Thread):
     def run(self):
         print "Starting " + self.name
         while True:
+            if FILE_END:
+                print 'FILE_END, %s returns' % (self.name)
+                return
             code = get_code()
             print 'Code is: %s, thread: %s' % (code, self.name) 
             if not code:
-                FILE_END = True
-                print '%s returns' % (self.name)
+                print 'Non-Code, %s returns' % (self.name)
                 return
             try:
                 end = datetime.date.today()
                 start = datetime.date.today() - datetime.timedelta(days=200)
                 ts.get_h_data(code).to_csv('qfq_data/%s.csv' % (code))
+                print 'Code: %s, thread: %s is done' % (code, self.name)
             except:
-                print 'something wrong with code: %s' % (code)
+                print 'something wrong with code: %s, thread: %s' % (code, self.name)
 
 def get_code():
-    if FILE_END:
-        return ""
+    global FILE_END
     threadLock.acquire()
+    if FILE_END:
+        threadLock.release()
+        return '' 
     r = f.readline()
+    if not r:
+        FILE_END = True
+        threadLock.release()
+        return ''
+    r = r.strip()
     threadLock.release()
-    return r.strip()
+    return r
 
 threadLock = threading.Lock()
 threads = []
