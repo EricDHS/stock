@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "get_qfq_history.py", line 18, in <module>
+    ts.get_stock_basics().to_csv('data/basics.csv')
+  File "/usr/local/lib/python2.7/site-packages/tushare/stock/fundamental.py", line 44, in get_stock_basics
+    text = urlopen(request, timeout=10).read()
+  File "/usr/lib64/python2.7/socket.py", line 355, in read
+    data = self._sock.recv(rbufsize)
+  File "/usr/lib64/python2.7/httplib.py", line 612, in read
+    s = self.fp.read(amt)
+  File "/usr/lib64/python2.7/socket.py", line 384, in read
+    data = self._sock.recv(left)
+socket.timeout: timed out

@@ -15,6 +15,7 @@ import time
 FILE_END = False
 
 f = open('pure_code', 'r')
+ts.get_stock_basics().to_csv('data/basics.csv')
 class myThread (threading.Thread):
     def __init__(self, name):
 	threading.Thread.__init__(self)

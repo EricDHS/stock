@@ -31,7 +31,7 @@ class StockHash:
     def dump(self, out):
         dup_code = []
         for k,v in self.data.items():
-            if len(v) > 1:
+            if len(v) >= 1:
                 print k
                 out.write('%s\n'% (k))
                 for kv in v:
